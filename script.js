@@ -15,6 +15,10 @@ class NewsFeed {
 		try {
 			const feedItems = await this.fetchFeed(limit, skip);
 			feedItems.forEach((feedItem) => this.renderFeedItem(feedItem));
+			this.renderLoader();
+			setTimeout(() => {
+				this.observer = this.handleInfiniteScroll();
+			}, 200);
 		} catch (error) {
 			throw new Error(error);
 		}
@@ -52,6 +56,27 @@ class NewsFeed {
 		}
 
 		this.feedWrapper.append(feedItemElement);
+	}
+
+	renderLoader() {
+		const loaderElement = document.createElement("div");
+		loaderElement.className = "loader";
+		loaderElement.textContent = "loading...";
+		this.feedWrapper.appendChild(loaderElement);
+	}
+
+	handleInfiniteScroll() {
+		const observer = new IntersectionObserver((entries) => {
+			if (entries[0].isIntersecting) {
+				entries[0].target.remove();
+				this._skip += 2;
+				this.renderFeed(this._limit, this._skip);
+			}
+		});
+
+		const loader = document.querySelector(".loader");
+		observer.observe(loader);
+		return observer;
 	}
 }
 

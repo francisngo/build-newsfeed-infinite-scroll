@@ -25,3 +25,11 @@
 img {
 	max-width: 100%;
 }
+
+.loader {
+	height: 20px;
+	background: #eee;
+	text-align: center;
+	font-weight: bold;
+	padding: 20px;
+}
